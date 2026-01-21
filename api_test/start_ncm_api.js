@@ -173,6 +173,7 @@ async function main() {
   // 3. 启动 Server，传入修改后的 modules
   await server.serveNcmApi({
     port,
+    host: '0.0.0.0',  // 明确只监听 IPv4，避免云端 IPv6 冲突
     moduleDefs: modules
   });
 
