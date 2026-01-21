@@ -14,6 +14,7 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
+    "dev:api": "node api_test/start_ncm_api.js",
     "dev:web": "vite dev",
     "build": "electron-vite build",
     "postinstall": "electron-builder install-app-deps",
