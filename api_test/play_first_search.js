@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const { exec } = require('child_process');
-const { API_BASE } = require('./config');
+const apiConfig = require('./set.json');
+const API_BASE = apiConfig.apiBase || 'http://127.0.0.1:30488';
 
 function getArg(name, defaultValue) {
   const prefix = `--${name}=`;
@@ -47,9 +48,9 @@ async function main() {
   const id = first.id;
   const artist = Array.isArray(first?.ar)
     ? first.ar
-      .map((a) => a?.name)
-      .filter(Boolean)
-      .join(' / ')
+        .map((a) => a?.name)
+        .filter(Boolean)
+        .join(' / ')
     : '';
   console.log(`\n[FIRST SONG] id=${id} name=${first?.name} artist=${artist}`);
 

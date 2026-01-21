@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
-const { API_BASE } = require('./config');
+const apiConfig = require('./set.json');
+const API_BASE = apiConfig.apiBase || 'http://127.0.0.1:30488';
 
 function getArg(name, defaultValue) {
   const prefix = `--${name}=`;
@@ -45,9 +46,9 @@ async function main() {
   items.slice(0, 5).forEach((s, idx) => {
     const artist = Array.isArray(s?.ar)
       ? s.ar
-        .map((a) => a?.name)
-        .filter(Boolean)
-        .join(' / ')
+          .map((a) => a?.name)
+          .filter(Boolean)
+          .join(' / ')
       : '';
     const album = s?.al?.name || '';
     console.log(`${idx + 1}. id=${s?.id} name=${s?.name} artist=${artist} album=${album}`);
@@ -78,9 +79,9 @@ async function main() {
 
   const artist = Array.isArray(firstSong?.ar)
     ? firstSong.ar
-      .map((a) => a?.name)
-      .filter(Boolean)
-      .join(' / ')
+        .map((a) => a?.name)
+        .filter(Boolean)
+        .join(' / ')
     : '';
 
   console.log('\n[SONG DETAIL]');

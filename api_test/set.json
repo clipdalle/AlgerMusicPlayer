@@ -1,0 +1,6 @@
+{
+  "apiBase": "http://127.0.0.1:30488",
+  "enableMusicUnblock": true,
+  "enabledMusicSources": ["kugou", "migu", "pyncmd"],
+  "musicApiPort": 30488
+}
