@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const { exec } = require('child_process');
+const { API_BASE } = require('./config');
 
 function getArg(name, defaultValue) {
   const prefix = `--${name}=`;
@@ -17,7 +18,7 @@ function openExternal(url) {
 }
 
 async function main() {
-  const base = getArg('base', 'http://127.0.0.1:30488').replace(/\/$/, '');
+  const base = getArg('base', API_BASE).replace(/\/$/, '');
   const keywords = getArg('keywords', '海陆风');
   const type = Number(getArg('type', '1'));
   const limit = Number(getArg('limit', '20'));
@@ -46,9 +47,9 @@ async function main() {
   const id = first.id;
   const artist = Array.isArray(first?.ar)
     ? first.ar
-        .map((a) => a?.name)
-        .filter(Boolean)
-        .join(' / ')
+      .map((a) => a?.name)
+      .filter(Boolean)
+      .join(' / ')
     : '';
   console.log(`\n[FIRST SONG] id=${id} name=${first?.name} artist=${artist}`);
 
