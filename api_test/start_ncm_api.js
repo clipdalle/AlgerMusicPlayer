@@ -115,12 +115,48 @@ async function main() {
         dt: songDetail.dt
       };
 
+      const buildUnblockResponse = (matchResult) => ({
+        status: 200,
+        body: {
+          code: 200,
+          data: [
+            {
+              id: Number(id),
+              url: matchResult.url,
+              br: 320000,
+              size: matchResult.size || 0,
+              md5: null,
+              code: 200,
+              expi: 1200,
+              type: 'mp3',
+              gain: 0,
+              fee: 0,
+              payed: 0,
+              flag: 0,
+              canExtend: false,
+              freeTrialInfo: null,
+              level: 'standard',
+              encodeType: 'mp3'
+            }
+          ]
+        },
+        cookie: result ? result.cookie : []
+      });
+
       try {
         // 从配置文件读取音源设置
         const sources = apiConfig.enabledMusicSources || ['kugou', 'migu', 'pyncmd'];
         console.log(`[Unblock] Searching sources: ${sources.join(', ')} with id: ${songData.id}`);
 
-        const matchResult = await match(parseInt(id), sources, songData);
+        let matchResult = await match(parseInt(id), sources, songData);
+
+        if (!matchResult || !matchResult.url) {
+          const retrySources = apiConfig.retryMusicSources || sources.filter((s) => s !== 'kugou');
+          if (retrySources.length > 0) {
+            console.log(`[Unblock] Retry with sources: ${retrySources.join(', ')}`);
+            matchResult = await match(parseInt(id), retrySources, songData);
+          }
+        }
 
         if (matchResult && matchResult.url) {
           console.log(`[Unblock] Success URL: ${matchResult.url}`);
@@ -131,35 +167,7 @@ async function main() {
           else console.log('⚠️ [Unblock] Got other link');
 
           console.log(`[Unblock] Meta - Size: ${matchResult.size}`);
-
-          // 伪造一个符合 /song/url/v1 格式的返回
-          return {
-            status: 200,
-            body: {
-              code: 200,
-              data: [
-                {
-                  id: Number(id),
-                  url: matchResult.url,
-                  br: 320000,
-                  size: matchResult.size || 0,
-                  md5: null,
-                  code: 200,
-                  expi: 1200,
-                  type: 'mp3',
-                  gain: 0,
-                  fee: 0,
-                  payed: 0,
-                  flag: 0,
-                  canExtend: false,
-                  freeTrialInfo: null,
-                  level: 'standard',
-                  encodeType: 'mp3'
-                }
-              ]
-            },
-            cookie: result ? result.cookie : []
-          };
+          return buildUnblockResponse(matchResult);
         }
       } catch (e) {
         console.error('[Unblock] Failed:', e);
